@@ -138,3 +138,118 @@ BadMethodCallException: Method App\Http\Controllers\TodoListController::index do
 
 
 - if you want to show real errors without the handling of exception handling use `testcase.php`.
+### Fetch from Database.
+- 1st you have to create a database so create a model named TodoList
+```php
+
+php artisan make:model TodoList
+
+```
+- now we didn't migrate database so we get after running test
+errors
+- PdoException
+- QueryException
+- Lets create a migration file first for creating tables in Database.
+`php artisan make:migration CreateTodoListsTable`
+- now if we run the test we might see the same result error why because we need migrating the database for in memory database 
+- So add a trait called Refresh Database.
+- It is used to migrate and remigrate a database for testing Purpose.
+```php
+
+class TodoListTest extends TestCase
+{
+    use RefreshDatabase;
+    public function test_fetch_todo_list()
+    {
+    }
+```
+- Now the test Results shows
+```php
+
+• Tests\Feature\TodoListTest > fetch todo list
+  Failed asserting that 0 matches expected 1.
+
+  ```
+- we are getting 0 results but expecting 1.
+- why we get 0 because there is no data in the database.
+- so lets insert Data.
+
+```php
+
+ public function test_fetch_todo_list()
+    {
+        
+        //preparation/prepare
+        TodoList::create(['name' => 'my list']);
+       
+      $response = $this->getJson(route('todolist.store'));
+      
+    $response->assertStatus(200);
+    //dd($response->json());
+       $this->assertEquals(1, count($response->json()));
+        //assert means getting or fetching the received data.
+
+
+    }
+```
+ 
+- we get error `Add [name] to fillable property to allow mass assignment on [App\Models\TodoList]`.
+- whenever while inserting data you must add Filllable property Mass Assignment in the Model.
+```php
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class TodoList extends Model
+{
+    use HasFactory;
+
+   protected $fillable = ['name'];
+}
+
+```
+- we get another error after the test
+```php
+QueryException
+
+
+
+  SQLSTATE[HY000]: General error: 1 table todo_lists has no column named name (SQL: insert into "todo_lists" ("name", "updated_at", "created_at") values (my list, 2024-09-04 06:00:04, 2024-09-04 06:00:04))
+```
+
+- Telling that table has no column name like name ,so we have to add that in the table 
+- Here Table means Migration file.
+
+
+```php
+
+public function up()
+    {
+        Schema::create('todo_lists', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+    }
+```
+
+Now thte test of inserting data passed.
+
+```php
+
+
+ php artisan test
+Warning: TTY mode is not supported on Windows platform.
+
+   PASS  Tests\Feature\TodoListTest
+  ✓ fetch todo list
+
+  Tests:  1 passed
+  Time:   0.27s
+```
+- For creating or inserting data we used this ` TodoList::create(['name' => 'my list']);` 
+- But using Factory makes efficient.
