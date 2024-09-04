@@ -86,4 +86,55 @@ class ExampleTest extends TestCase
 
 
 ```
-Where we are goin to write the API?
+
+Where we are going to write the API?
+write it in API route.
+
+But before creating API we are here to first write an Test
+
+```php
+php artisan make:test TodoListTest
+```
+
+Every Test Has 3 phase
+
+- Preparation
+- Action /perform
+- Assertion/predict
+
+- we have created an route for testing purposes.`Route::get('todo-list', [TodoListController::class, 'index']);`
+Errors
+- NotfoundhttpExecution ,because of API has prefix than ,webroutes
+```php
+public function boot()
+    {
+        $this->configureRateLimiting();
+
+        $this->routes(function () {
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
+
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'));
+        });
+    }
+```
+- next error `Class "TodoListController" does not exist `
+- Lets write that controller
+- using this cmd it will generate functions for API too
+```php
+
+php artisan make:controller TodoListController --api
+```
+- now below error
+```php
+
+BadMethodCallException: Method App\Http\Controllers\TodoListController::index does not exist.
+
+```
+
+
+- if you want to show real errors without the handling of exception handling use `testcase.php`.
