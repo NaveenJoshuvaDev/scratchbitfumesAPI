@@ -14,7 +14,9 @@ class TodoListTest extends TestCase
     {
         //$this->withoutExceptionHandling();
         //preparation/prepare
-        TodoList::create(['name' => 'my list']);
+        $list = TodoList::factory()->create();
+        dd($list);
+        //TodoList::create(['name' => 'my list']);
         //no preparation
         //action/perform
       $response = $this->getJson(route('todolist.store'));

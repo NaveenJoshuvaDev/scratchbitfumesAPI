@@ -253,3 +253,124 @@ Warning: TTY mode is not supported on Windows platform.
 ```
 - For creating or inserting data we used this ` TodoList::create(['name' => 'my list']);` 
 - But using Factory makes efficient.
+- Why Factory it automatically creates the fields as much as many ,what if manually want tocreate ten fields like name?
+
+### How to use Factory?
+
+- To create `TodoList::factory()->create();`
+- After adding this run the test you may face the below  error. 
+```php
+Tests\Feature\TodoListTest > fetch todo list
+   PHPUnit\Framework\ExceptionWrapper 
+
+  Class "Database\Factories\TodoListFactory" not found
+
+
+```
+- Write the factory?
+`php artisan make:factory TodoListFactory -h means help.`
+- add attach with model  `php artisan make:factory TodoListFactory -m Todolist`
+- Lets define the attribute fields in TodoListFactory.php file.
+- Basically we are just filling the field that we need for table column.
+```php
+
+
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Todolist>
+ */
+class TodoListFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition()
+    {
+        return [
+            //
+            'name' => 'my List',
+        ];
+    }
+}
+
+
+```
+- Now run the test you will get passed.
+```php
+
+
+ php artisan test
+Warning: TTY mode is not supported on Windows platform.
+
+   PASS  Tests\Feature\TodoListTest
+  ✓ fetch todo list
+
+  Tests:  1 passed
+  Time:   2.36s
+```
+How the factory creates and test passed? lets see through die and dumb.
+- lets die and dumb `dd($list);`
+
+```php
+ php artisan test
+Warning: TTY mode is not supported on Windows platform.
+App\Models\TodoList {#1229 // tests\Feature\TodoListTest.php:18
+  #connection: "sqlite"
+  #table: null
+  #primaryKey: "id"
+  #keyType: "int"
+  +incrementing: true
+  #with: []
+  #withCount: []
+  +preventsLazyLoading: false
+  #perPage: 15
+  +exists: true
+  +wasRecentlyCreated: true
+  #escapeWhenCastingToString: false
+  #attributes: array:4 [
+    "name" => "my List"
+    "updated_at" => "2024-09-04 07:08:40"
+    "created_at" => "2024-09-04 07:08:40"
+    "id" => 1
+  ]
+  #original: array:4 [
+    "name" => "my List"
+    "updated_at" => "2024-09-04 07:08:40"
+    "created_at" => "2024-09-04 07:08:40"
+    "id" => 1
+  ]
+  #changes: []
+  #casts: []
+  #classCastCache: []
+  #attributeCastCache: []
+  #dates: []
+  #dateFormat: null
+  #appends: []
+  #dispatchesEvents: []
+  #observables: []
+  #relations: []
+  #touches: []
+  +timestamps: true
+  #hidden: []
+  #visible: []
+  #fillable: array:1 [
+    0 => "name"
+  ]
+  #guarded: array:1 [
+    0 => "*"
+  ]
+}
+
+
+
+```
+- Factory is great but we have another great thing called Faker.
+- Faker is a Fake Generation Library.
+- Faker is a base class of Factory.
