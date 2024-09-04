@@ -15,7 +15,7 @@ class TodoListTest extends TestCase
         //$this->withoutExceptionHandling();
         //preparation/prepare
         $list = TodoList::factory()->create();
-        dd($list);
+       // dd($list);
         //TodoList::create(['name' => 'my list']);
         //no preparation
         //action/perform

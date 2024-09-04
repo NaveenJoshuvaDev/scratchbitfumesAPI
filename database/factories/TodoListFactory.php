@@ -18,7 +18,8 @@ class TodoListFactory extends Factory
     {
         return [
             //
-            'name' => 'my List',
+            //'name' => 'my List',
+            'name'=> $this->faker->sentence
         ];
     }
 }

@@ -374,3 +374,49 @@ App\Models\TodoList {#1229 // tests\Feature\TodoListTest.php:18
 - Factory is great but we have another great thing called Faker.
 - Faker is a Fake Generation Library.
 - Faker is a base class of Factory.
+
+```php
+
+class TodoListFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition()
+    {
+        return [
+            //
+            //'name' => 'my List',
+            'name'=> $this->faker->sentence//or->'name'=> $this->faker->name;
+        ];
+    }
+}
+
+
+
+
+
+```
+- Above faker will generate what you have requested eg. name or sentence.
+- after dd using faker my results below
+
+```php
+
+ #attributes: array:4 [
+    "name" => "Placeat quidem sequi quas aperiam odio excepturi doloribus."
+    "updated_at" => "2024-09-04 12:08:59"
+    "created_at" => "2024-09-04 12:08:59"
+    "id" => 1
+  ]
+  #original: array:4 [
+    "name" => "Placeat quidem sequi quas aperiam odio excepturi doloribus."
+    "updated_at" => "2024-09-04 12:08:59"
+    "created_at" => "2024-09-04 12:08:59"
+    "id" => 1
+  ]
+
+  ```
+- How to override the name that facker generated
+`  $list = TodoList::factory()->create(['name' => 'my list']);`
